@@ -13,32 +13,34 @@ Background(document.querySelector('#canvas-wrapper'))
 
 // INIT SCENE //////////////////////////////////////////
 
-let camera, cameraGroup, scene, renderer
+let camera, cameraGroup, scene, renderer, canvasWrapper
 
-const createScene = () => {
+const createScene = wrapper => {
+    canvasWrapper = wrapper
+
     scene = new THREE.Scene()
 
-    camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 10000 )
-    camera.position.z = 3000
+    camera = new THREE.PerspectiveCamera(40, wrapper.offsetWidth / wrapper.offsetHeight, 1, 10000)
+    camera.position.z = 2500
     cameraGroup = new THREE.Group()
-    cameraGroup.add(camera);
+    cameraGroup.add(camera)
     scene.add(cameraGroup)
 
     renderer = new THREE.CSS3DRenderer()
-    renderer.setSize(window.innerWidth, window.innerHeight)
-    document.getElementById('canvas-wrapper2').appendChild(renderer.domElement)
+    renderer.setSize(wrapper.offsetWidth, wrapper.offsetHeight)
+    wrapper.appendChild(renderer.domElement)
 
     window.addEventListener('resize', onWindowResize, false)
 }
 
 
-const render = () => renderer.render( scene, camera )
+const render = () => renderer.render(scene, camera)
 
 
 const onWindowResize = () => {
-    camera.aspect = window.innerWidth / window.innerHeight
+    camera.aspect = canvasWrapper.offsetWidth / canvasWrapper.offsetHeight
     camera.updateProjectionMatrix()
-    renderer.setSize( window.innerWidth, window.innerHeight )
+    renderer.setSize(canvasWrapper.offsetWidth, canvasWrapper.offsetHeight)
     render()
 }
 
@@ -100,7 +102,7 @@ const createNewsBlocks = DATA => {
         
         scene.add(obj3D)
 
-        newsBlocks.push({ obj3D, letters });
+        newsBlocks.push({ obj3D, mainBlock, letters });
     }
 }
 
@@ -130,6 +132,9 @@ const startAnimateBlock = indexBlock => {
         .then(() => { 
             return showLetters(indexBlock) 
         })
+        .then(() => {
+            return delay(2000)
+        })
         .then(() => { 
             hideLetters(indexBlock)
             return hideBlock(indexBlock)
@@ -151,6 +156,7 @@ const startAnimateBlock = indexBlock => {
 const showBlock = function (index) { 
     return new Promise((resolve, reject) => {
         isRender = true
+        newsBlocks[index].mainBlock.classList.add('light-border')  
         transform(newsBlocks[index].obj3D, {x: 0, y: 0, z: 500}, {x: 0, y: 0, z: 0}, 1000)
         setTimeout(() => { 
             isRender = false
@@ -158,6 +164,13 @@ const showBlock = function (index) {
         }, 1000)
     })
 }
+
+
+const delay = val => {
+    return new Promise((resolve, reject) => {
+        setTimeout(resolve, val)
+    })
+} 
 
 
 const hideBlock = function(indexBlock) {
@@ -170,6 +183,7 @@ const hideBlock = function(indexBlock) {
             1000
         )
         setTimeout(() => { 
+            newsBlocks[indexBlock].mainBlock.classList.remove('light-border')  
             isRender = false
             resolve() 
         }, 1000)
@@ -203,7 +217,7 @@ const showLetters = index => {
                 } else {
                     resolve() 
                 }
-            }, 1)
+            }, 0)
         }
         showLetter(0)
     })
@@ -237,7 +251,7 @@ const transform = (obj, pos, rot, duration) => {
 
 /////////////////////////////////////////////////////////////////////
 
-createScene()
+createScene(document.querySelector('#canvas-wrapper2'))
 createNewsBlocks(DATA)
 render()
 animate()
