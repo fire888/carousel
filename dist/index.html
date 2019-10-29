@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Animation</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name='viewport' content='width=device-width, user-scalable=no'>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      overflow: hidden;
+    }
+
+    #canvas-wrapper,
+    #canvas-wrapper2 {
+      position: absolute;
+      z-index: 0;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    #canvas-wrapper2 {
+      z-index: 100;
+    }
+
+    a {
+      color: #8ff;
+    }
+
+    .news-item  {
+      color: rgba(255,255,255,0.75);
+      text-shadow: 0 0 10px rgba(0,255,255,0.95);
+      width: 1200px;
+      height: auto;
+      box-shadow: 0px 0px 12px rgba(0,255,255,0.5);
+      border: 1px solid rgba(127,255,255,0.25);
+      font-family: Helvetica, sans-serif;
+      background: rgba(34, 59, 97, 0.616);
+      min-height: 1200px;
+    }
+
+    .news-item:hover {
+      box-shadow: 0px 0px 12px rgba(0,255,255,0.75);
+      border: 1px solid rgba(127,255,255,0.75);
+    }
+
+    .news-item img {
+      width: 1200px;
+      height: auto;
+      margin-bottom: -105px;
+    }
+
+    .news-item-date {
+      position: relative;
+      font-size: 60px;
+      text-align: right;
+      padding: 20px 100px;
+      background: rgba(34, 59, 97, 0.616);
+      min-height: 105px;
+    }
+
+    .news-item-text {
+      position: relative;
+      font-size: 40px;
+      font-weight: bold;
+      text-align: left;
+      padding: 60px 100px 100px 100px;
+      color: rgba(255,255,255,0.75);
+      text-shadow: 0 0 10px rgba(0,255,255,0.95);
+    }
+
+    .new { opacity: 0; }
+    .div_opacity {
+      /*transition: opacity .2s ease-in-out;*/
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+    <div id="canvas-wrapper"></div>
+    <div id="canvas-wrapper2"></div>
+<script type="text/javascript" src="app.bundle.js"></script></body>
+</html>
