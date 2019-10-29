@@ -11,11 +11,11 @@ Background(document.querySelector('#canvas-wrapper'))
 
 
 
-////////////////////////////////////////////
+// INIT SCENE //////////////////////////////////////////
 
 let camera, cameraGroup, scene, renderer
 
-function createScene() {
+const createScene = () => {
     scene = new THREE.Scene()
 
     camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 10000 )
@@ -31,34 +31,39 @@ function createScene() {
     window.addEventListener('resize', onWindowResize, false)
 }
 
-function render() {
-    renderer.render( scene, camera );
+
+const render = () => renderer.render( scene, camera )
+
+
+const onWindowResize = () => {
+    camera.aspect = window.innerWidth / window.innerHeight
+    camera.updateProjectionMatrix()
+    renderer.setSize( window.innerWidth, window.innerHeight )
+    render()
 }
 
-function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    render();
-}
 
 let isRender = true
 
-function animate() {
+const animate = () => {
     requestAnimationFrame(animate)
-    TWEEN.update()
 
     if (isRender) {
+        TWEEN.update()
         render()
     }
 }
 
 
-//////////////////////////
+
+
+
+
+// INIT BLOCKS //////////////////////////////////////////////////////
 
 const newsBlocks = []
 
-function createNewsBlocks(DATA) {
+const createNewsBlocks = DATA => {
     const arrNews = DATA.response.items
 
     for (let i = 0; i < arrNews.length; i++) {
@@ -66,9 +71,11 @@ function createNewsBlocks(DATA) {
         mainBlock.classList.add('news-item')
 
         const arrPict = getPictDromData(arrNews[i])
-        const img = document.createElement('img')
-        img.src = arrPict[0]
-        mainBlock.appendChild(img)  
+        if (arrPict) {
+            const img = document.createElement('img')
+            img.src = arrPict[0]
+            mainBlock.appendChild(img)
+        }  
 
         const dateBlock = document.createElement('div')
         dateBlock.classList.add('news-item-date')
@@ -80,28 +87,23 @@ function createNewsBlocks(DATA) {
 
         const textBlock = document.createElement('div')
         textBlock.classList.add('news-item-text')
-        let textData = arrNews[i]["text"].replace(/./g, '<span class="hidden-letter">$&</span>')
+        const textData = arrNews[i]["text"].replace(/./g, '<span class="hidden-letter">$&</span>')
         textBlock.innerHTML = textData
         mainBlock.appendChild(textBlock)
 
         const letters = mainBlock.querySelectorAll('.hidden-letter')
 
-        let obj3D = new THREE.CSS3DObject(mainBlock)
+        const obj3D = new THREE.CSS3DObject(mainBlock)
         obj3D.rotation.x = -Math.PI / 2
         obj3D.position.y = -400 + (i * -20)
         obj3D.position.z = -400
         
         scene.add(obj3D)
 
-        newsBlocks.push({
-            obj3D,
-            mainBlock,
-            textBlock,
-            dateBlock,
-            letters,
-        });
+        newsBlocks.push({ obj3D, letters });
     }
 }
+
 
 const getPictDromData = data => {
     if (!data['attachments'] || !data['attachments'].length) {
@@ -120,8 +122,7 @@ const getPictDromData = data => {
 
 
 
-
-//////////////////////////////////////////
+// UPDATE ///////////////////////////////////////////////////////////
 
 
 const startAnimateBlock = indexBlock => {
@@ -135,8 +136,7 @@ const startAnimateBlock = indexBlock => {
         })
         .then(() => {
             if (indexBlock < newsBlocks.length - 1) {
-                startAnimateBlock(indexBlock + 1)
-                return;
+                return startAnimateBlock(indexBlock + 1)
             }
             return moveBlocksDown()
         })
@@ -146,6 +146,7 @@ const startAnimateBlock = indexBlock => {
             }
         })
 }
+
 
 const showBlock = function (index) { 
     return new Promise((resolve, reject) => {
@@ -162,13 +163,19 @@ const showBlock = function (index) {
 const hideBlock = function(indexBlock) {
     return new Promise((resolve, reject) => {
         isRender = true
-        transform(newsBlocks[indexBlock].obj3D, {x: 0, y: 600 + (indexBlock * (-20)), z: -400}, {x: -Math.PI / 2, y: 0, z: 0}, 1000)
+        transform(
+            newsBlocks[indexBlock].obj3D, 
+            {x: 0, y: 600 + (indexBlock * (-20)), z: -400}, 
+            {x: -Math.PI / 2, y: 0, z: 0}, 
+            1000
+        )
         setTimeout(() => { 
             isRender = false
             resolve() 
         }, 1000)
     })
 }
+
 
 const moveBlocksDown = function() {
     return new Promise((resolve, reject) => {
@@ -184,19 +191,24 @@ const moveBlocksDown = function() {
 }
 
 
-const showLetters = function (index) {
+const showLetters = index => {
     return new Promise((resolve, reject) => {
         const { letters } = newsBlocks[index]
-        for (let i = 0; i < letters.length; i++) {
-            setTimeout(function() { 
-                letters[i].className = 'show-letter'
-                if (i === letters.length - 1) {
-                    resolve()
+
+       const showLetter = ind => {
+            setTimeout(() => {
+                letters[ind].className = 'show-letter'
+                if (ind < letters.length - 1) {
+                    showLetter(ind + 1)        
+                } else {
+                    resolve() 
                 }
-            }, i * 10)
+            }, 1)
         }
+        showLetter(0)
     })
 }
+
 
 const hideLetters = indexBlock => {
     const { letters } = newsBlocks[indexBlock]
@@ -206,33 +218,28 @@ const hideLetters = indexBlock => {
 }
 
 
+const transform = (obj, pos, rot, duration) => {
+    new TWEEN.Tween(obj.position)
+        .to({ x: pos.x, y: pos.y, z: pos.z }, duration)
+        .easing( TWEEN.Easing.Exponential.InOut )
+        .start()
+
+    new TWEEN.Tween(obj.rotation)
+        .to({ x: rot.x, y: rot.y, z: rot.z }, duration)
+        .easing(TWEEN.Easing.Exponential.InOut)
+        .start()
+}
 
 
 
-///////////////////////
+
+
+
+/////////////////////////////////////////////////////////////////////
 
 createScene()
 createNewsBlocks(DATA)
 render()
 animate()
 startAnimateBlock(0)
-
-
-
-
-
-
-////////////////////////
-
-function transform( obj, pos, rot, duration ) {
-    new TWEEN.Tween( obj.position )
-        .to( { x: pos.x, y: pos.y, z: pos.z }, duration )
-        .easing( TWEEN.Easing.Exponential.InOut )
-        .start()
-
-    new TWEEN.Tween( obj.rotation )
-        .to( { x: rot.x, y: rot.y, z: rot.z }, duration )
-        .easing( TWEEN.Easing.Exponential.InOut )
-        .start()
-}
 
