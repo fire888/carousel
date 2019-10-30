@@ -27,9 +27,10 @@
       position: absolute;
       top: 10vh;
       left: 10vw;
-      border: 2px solid #f00;
+      /*border: 2px solid #f00;*/
       width: 80vw;
       height: 80vh;
+      overflow: hidden;
     }
 
     #canvas-wrapper2 {
@@ -93,9 +94,29 @@
       transition: opacity .2s ease-in-out;
       opacity: 1;
     }
+
+    #ui {
+      position: absolute;
+      right: 0;
+      top: 0;
+      background-color: darkslategray;
+      padding: 5px;
+      color: white;
+      z-index: 200;
+    }
+
+
   </style>
 </head>
 <body>
+    <div id="ui">
+      Slideshow Type
+      <select id="type-slideshow">
+        <option value="bottom">bottom</option>  
+        <option value="top">top</option>  
+        <option value="left">left</option>  
+      </select>
+    </div>
     <div id="canvas-wrapper"></div>
     <div id="canvas-wrapper2"></div>
 </body>
