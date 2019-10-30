@@ -172,6 +172,8 @@ const setBlocksInFirstPosition = () => {
     })
 }
 
+/*
+
 const startAnimateFirst = indexBlock => {
     showBlock(indexBlock)
         .then(() => { 
@@ -197,7 +199,57 @@ const startAnimateFirst = indexBlock => {
         })
 }
 
+*/
 
+
+function *animateBlockFirst(index) {
+    /*showBlock(index, it.next)
+    yield showLetters2(index, it.next)
+    yield delay(it.next)
+    yield delay(2000, it.next)
+    hideLetters(indexBlock)
+    yield hideBlock(indexBlock, it.next)
+    if (indexBlock < newsBlocks.length - 1) {
+        return animateBlockFirst(indexBlock + 1)
+    }
+    yield moveBlocksDown(index, it.next)
+    if (indexBlock === newsBlocks.length - 1) {
+        startAnimateFirst(0)
+    }*/
+    yield delay2(2000)
+    yield delay2(2000, it.next)
+    yield delay2(2000, it.next)
+    console.log('end')
+} 
+
+let it = animateBlockFirst(0)
+
+
+const delay2 = (time, callback) => {
+    setTimeout(() => {
+        console.log('!!!')
+        it.next()
+    }, time)
+}
+
+it.next()
+
+const showBlock = function (index, callback) { 
+    isRender = true
+    newsBlocks[index].mainBlock.classList.add('light-border')  
+    transform(
+        newsBlocks[index].obj3D, 
+        {x: 0, y: 0, z: 500}, 
+        {x: 0, y: 0, z: 0}, 1000, 
+        () => {
+            isRender = false
+            callback() 
+        }
+    )
+}
+
+
+/*
 const showBlock = function (index) { 
     return new Promise((resolve, reject) => {
         isRender = true
@@ -258,7 +310,7 @@ const moveBlocksDown = function() {
     })
 }
 
-
+*/
 
 
 // ANIMATION - 2 ///////////////////////////////////////////////
@@ -524,8 +576,8 @@ createScene(document.querySelector('#canvas-wrapper2'))
 createNewsBlocks(DATA)
 render()
 animate()
-setBlocksInFirstPosition()
-startAnimateFirst(0)
+//setBlocksInFirstPosition()
+//startAnimateFirst(0)
 //setBlocksInSecondPosition() 
 //startAnimateSecond(0)
 //setBlocksInThirdPosition() 
