@@ -21,7 +21,7 @@ const createScene = wrapper => {
     scene = new THREE.Scene()
 
     camera = new THREE.PerspectiveCamera(40, wrapper.offsetWidth / wrapper.offsetHeight, 1, 10000)
-    camera.position.z = 2500
+    camera.position.z = 3000
     cameraGroup = new THREE.Group()
     cameraGroup.add(camera)
     scene.add(cameraGroup)
@@ -38,6 +38,7 @@ const render = () => renderer.render(scene, camera)
 
 
 const onWindowResize = () => {
+    resizeMainBlocks()
     camera.aspect = canvasWrapper.offsetWidth / canvasWrapper.offsetHeight
     camera.updateProjectionMatrix()
     renderer.setSize(canvasWrapper.offsetWidth, canvasWrapper.offsetHeight)
@@ -72,12 +73,18 @@ const createNewsBlocks = DATA => {
         const mainBlock = document.createElement('div')
         mainBlock.classList.add('news-item')
 
+        const headBlock = document.createElement('div')
+        headBlock.className = 'news-item-head'
+        mainBlock.appendChild(headBlock) 
+
         const arrPict = getPictDromData(arrNews[i])
+        let img = null
         if (arrPict) {
-            const img = document.createElement('img')
+            img = document.createElement('img')
             img.src = arrPict[0]
-            mainBlock.appendChild(img)
-        }  
+            headBlock.appendChild(img)
+        }
+        const image = img ? img : null
 
         const dateBlock = document.createElement('div')
         dateBlock.classList.add('news-item-date')
@@ -85,7 +92,7 @@ const createNewsBlocks = DATA => {
         dateData = `${dateData.getDay()}.${dateData.getMonth()-1}.${dateData.getFullYear()}`
         dateData = dateData.replace(/./g, '<span class="hidden-letter">$&</span>')
         dateBlock.innerHTML = dateData
-        mainBlock.appendChild(dateBlock)
+        headBlock.appendChild(dateBlock)
 
         const textBlock = document.createElement('div')
         textBlock.classList.add('news-item-text')
@@ -98,12 +105,35 @@ const createNewsBlocks = DATA => {
         const obj3D = new THREE.CSS3DObject(mainBlock)
         obj3D.rotation.x = -Math.PI / 2
         obj3D.position.y = -400 + (i * -20)
-        obj3D.position.z = -400
+        obj3D.position.z = -800
         
         scene.add(obj3D)
 
-        newsBlocks.push({ obj3D, mainBlock, letters });
+        newsBlocks.push({ obj3D, mainBlock, letters, image });
     }
+
+    resizeMainBlocks()
+}
+
+
+const resizeMainBlocks = () => {
+    canvasWrapper.style.fontSize = 1000 / canvasWrapper.offsetHeight * 45 + 'px'
+    const factor = canvasWrapper.offsetWidth / canvasWrapper.offsetHeight
+    const width = factor * 1700 + 'px'
+    let direction
+    factor > 2.5 ? direction = 'row' : direction = 'column'
+    newsBlocks.forEach( item => { 
+        item.mainBlock.style.width = width
+        item.mainBlock.style.flexDirection = direction
+        if (item.image) {
+            if (direction === 'row') { 
+                item.image.style.height = 1400 + 'px' 
+            }
+            if (direction === 'column') {
+                item.image.style.height = 800 + 'px' 
+            }            
+        }
+    } )
 }
 
 
@@ -178,7 +208,7 @@ const hideBlock = function(indexBlock) {
         isRender = true
         transform(
             newsBlocks[indexBlock].obj3D, 
-            {x: 0, y: 600 + (indexBlock * (-20)), z: -400}, 
+            {x: 0, y: 600 + (indexBlock * (-20)), z: -800}, 
             {x: -Math.PI / 2, y: 0, z: 0}, 
             1000
         )
@@ -195,7 +225,7 @@ const moveBlocksDown = function() {
     return new Promise((resolve, reject) => {
         isRender = true
         for (let i = 0; i < newsBlocks.length; i ++ ) {
-           transform(newsBlocks[i].obj3D, {x: 0, y: -400 + (i * -20), z: -400}, {x: -Math.PI / 2, y: 0, z: 0}, 1500)
+           transform(newsBlocks[i].obj3D, {x: 0, y: -400 + (i * -20), z: -800}, {x: -Math.PI / 2, y: 0, z: 0}, 1500)
         }
         setTimeout(()=> {
            isRender = false
