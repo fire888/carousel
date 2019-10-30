@@ -1,4 +1,4 @@
-# GARDEN :carousel_horse: # 
+# Carousel widget :carousel_horse: # 
 
 ![language](https://img.shields.io/badge/code-es6-green.svg) 
 ![Build status](https://img.shields.io/badge/build-devel-yellow.svg) 
