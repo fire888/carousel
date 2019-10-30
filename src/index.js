@@ -157,6 +157,14 @@ const getPictDromData = data => {
 
 // UPDATE ///////////////////////////////////////////////////////////
 
+
+const doNextAction = () => {
+    if (arrActions[0]) arrActions[0]( () => {
+        arrActions.splice( 0, 1 )
+        if ( arrActions[0] ) doNextAction() 
+    } )
+}
+
 // ANIMATION - 1
 
 const startPos01 = {
@@ -172,145 +180,89 @@ const setBlocksInFirstPosition = () => {
     })
 }
 
-/*
 
-const startAnimateFirst = indexBlock => {
-    showBlock(indexBlock)
-        .then(() => { 
-            return showLetters(indexBlock) 
-        })
-        .then(() => {
-            return delay(2000)
-        })
-        .then(() => { 
-            hideLetters(indexBlock)
-            return hideBlock(indexBlock)
-        })
-        .then(() => {
-            if (indexBlock < newsBlocks.length - 1) {
-                return startAnimateFirst(indexBlock + 1)
-            }
-            return moveBlocksDown()
-                .then(() => {
-                    if (indexBlock === newsBlocks.length - 1) {
-                        startAnimateFirst(0)
-                    }
-                })
-        })
+
+const createArrActionsFirst = indexBlock => {
+   return [
+       callback => showBlock2( indexBlock, callback ),
+       callback => showLetters2( indexBlock, callback ),
+       callback =>  delay2( 2000, callback ),
+       callback => {
+           hideLetters( indexBlock )
+           hideBlock2( indexBlock, callback )
+       },
+       callback => {
+           if ( indexBlock < newsBlocks.length - 1 ) {
+                arrActions = createArrActionsFirst( indexBlock + 1 )
+                doNextAction()
+           } else {
+               callback()
+           }
+       },
+       callback => moveBlocksDown( callback ),
+       () => { 
+           arrActions = createArrActionsFirst( 0 )
+           doNextAction()
+        }
+   ]
 }
 
-*/
 
 
-function *animateBlockFirst(index) {
-    /*showBlock(index, it.next)
-    yield showLetters2(index, it.next)
-    yield delay(it.next)
-    yield delay(2000, it.next)
-    hideLetters(indexBlock)
-    yield hideBlock(indexBlock, it.next)
-    if (indexBlock < newsBlocks.length - 1) {
-        return animateBlockFirst(indexBlock + 1)
-    }
-    yield moveBlocksDown(index, it.next)
-    if (indexBlock === newsBlocks.length - 1) {
-        startAnimateFirst(0)
-    }*/
-    yield delay2(2000)
-    yield delay2(2000, it.next)
-    yield delay2(2000, it.next)
-    console.log('end')
-} 
-
-let it = animateBlockFirst(0)
-
-
-const delay2 = (time, callback) => {
-    setTimeout(() => {
-        console.log('!!!')
-        it.next()
-    }, time)
-}
-
-it.next()
-
-const showBlock = function (index, callback) { 
+const showBlock2 = function (index, callback) { 
     isRender = true
     newsBlocks[index].mainBlock.classList.add('light-border')  
     transform(
         newsBlocks[index].obj3D, 
         {x: 0, y: 0, z: 500}, 
-        {x: 0, y: 0, z: 0}, 1000, 
+        {x: 0, y: 0, z: 0}, 
+        1000, 
         () => {
             isRender = false
-            callback() 
+            callback()
         }
     )
 }
 
 
-/*
-const showBlock = function (index) { 
-    return new Promise((resolve, reject) => {
-        isRender = true
-        newsBlocks[index].mainBlock.classList.add('light-border')  
-        transform(
-            newsBlocks[index].obj3D, 
-            {x: 0, y: 0, z: 500}, 
-            {x: 0, y: 0, z: 0}, 1000, 
-            () => {
-                isRender = false
-                resolve() 
-            }
-        )
-    })
+const delay2 = ( time, callback ) => {
+    setTimeout(() => {
+        callback()
+    }, time)
 }
 
 
-const delay = val => {
-    return new Promise((resolve, reject) => {
-        setTimeout(resolve, val)
-    })
-} 
-
-
-const hideBlock = function(indexBlock) {
-    return new Promise((resolve, reject) => {
-        isRender = true
-        transform(
-            newsBlocks[indexBlock].obj3D, 
-            {x: 0, y: 600 + (indexBlock * (-20)), z: -800}, 
-            {x: -Math.PI / 2, y: 0, z: 0}, 
-            1000,
-            () => { 
-                newsBlocks[indexBlock].mainBlock.classList.remove('light-border')  
-                isRender = false
-                resolve() 
-            }
-        )
-    })
-}
-
-
-const moveBlocksDown = function() {
-    return new Promise((resolve, reject) => {
-        isRender = true
-        for (let i = 0; i < newsBlocks.length; i ++ ) {
-           transform(
-               newsBlocks[i].obj3D, 
-               { x: startPos01.pos.x, y: startPos01.pos.y + (i * -20), z: startPos01.pos.z }, 
-               startPos01.rot,  
-               1500,
-               () => {
-                    isRender = false
-                    resolve()
-               }
-            )
+const hideBlock2 = function( indexBlock, callback ) {
+    isRender = true
+    transform(
+        newsBlocks[indexBlock].obj3D, 
+        {x: 0, y: 600 + (indexBlock * (-20)), z: -800}, 
+        {x: -Math.PI / 2, y: 0, z: 0}, 
+        1000,
+        () => { 
+            newsBlocks[indexBlock].mainBlock.classList.remove('light-border')  
+            isRender = false
+            callback()
         }
-    })
+    )
 }
 
-*/
+
+const moveBlocksDown = function( callback ) {
+    isRender = true
+    for (let i = 0; i < newsBlocks.length; i ++ ) {
+        transform(
+            newsBlocks[i].obj3D, 
+            { x: startPos01.pos.x, y: startPos01.pos.y + (i * -20), z: startPos01.pos.z }, 
+            startPos01.rot,  
+            1500,
+        )
+    }
+    setTimeout( () => {
+        isRender = false
+        callback()
+    }, 1800) 
+}
 
 
 // ANIMATION - 2 ///////////////////////////////////////////////
@@ -331,66 +283,62 @@ const setBlocksInSecondPosition = () => {
 }
 
 
-const startAnimateSecond = indexBlock => {
-    showBlock(indexBlock)
-        .then(() => { 
-            return showLetters(indexBlock) 
-        })
-        .then(() => {
-            return delay(2000)
-        })
-        .then(() => { 
-            hideLetters(indexBlock)
-            return removeBlockDown(indexBlock)
-        })
-        .then(() => {
-            if (indexBlock < newsBlocks.length - 1) {
-                return startAnimateSecond(indexBlock + 1)
+const createArrActionsSecond = indexBlock => {
+    return [
+        callback => showBlock2( indexBlock, callback ),
+        callback => showLetters2( indexBlock, callback ),
+        callback =>  delay2( 2000, callback ),
+        callback => {
+            hideLetters( indexBlock )
+            removeBlockDown( indexBlock, callback )
+        },
+        callback => {
+            if ( indexBlock < newsBlocks.length - 1 ) {
+                 arrActions = createArrActionsSecond( indexBlock + 1 )
+                 doNextAction()
+            } else {
+                callback()
             }
-            return moveBlocksTop()
-                .then(() => {
-                    if (indexBlock === newsBlocks.length - 1) {
-                        startAnimateSecond(0)
-                    }
-                })
-        })
-}
-
-
-const removeBlockDown = function(indexBlock) {
-    return new Promise((resolve, reject) => {
-        isRender = true
-        transform(
-            newsBlocks[indexBlock].obj3D, 
-            {x: 0, y: -1750, z: (newsBlocks.length * -100) + (indexBlock * 100)}, 
-            {x: 0, y: 0, z: 0}, 
-            1000,
-            () => {
-                isRender = false
-                resolve()
-             }
-        )
-    })
-}
-
-
-const moveBlocksTop = function() {
-    return new Promise((resolve, reject) => {
-        isRender = true
-        for (let i = 0; i < newsBlocks.length; i ++ ) {
-           transform(
-               newsBlocks[i].obj3D, 
-               {x: startPos02.pos.x, y: startPos02.pos.y, z: startPos02.pos.z + i * -100}, 
-               startPos02.rot,  
-               1500, 
-               () => {
-                    isRender = false
-                    resolve()
-               }
-               
-            )
+        },
+        callback => moveBlocksTop( callback ),
+        () => { 
+            arrActions = createArrActionsSecond( 0 )
+            doNextAction()
         }
-    })
+    ]
+ }
+ 
+
+
+const removeBlockDown = function( indexBlock, callback ) {
+    isRender = true
+    transform(
+        newsBlocks[indexBlock].obj3D, 
+        {x: 0, y: -1750, z: (newsBlocks.length * -100) + (indexBlock * 100)}, 
+        {x: 0, y: 0, z: 0}, 
+        1000,
+        () => {
+            isRender = false
+            callback()
+        }
+    )
+}
+
+
+const moveBlocksTop = function( callback ) {
+    isRender = true
+    for (let i = 0; i < newsBlocks.length; i ++ ) {
+       transform(               
+           newsBlocks[i].obj3D, 
+            {x: startPos02.pos.x, y: startPos02.pos.y, z: startPos02.pos.z + i * -100}, 
+            startPos02.rot,  
+            1500,       
+        )
+    }
+    setTimeout(            () => {
+        isRender = false
+        callback()
+    }, 1800 )
 }
 
 
@@ -415,7 +363,32 @@ const setBlocksInThirdPosition = () => {
 }
 
 
-let currentPromise = null
+const createArrActionsThird = indexBlock => {
+    return [
+        callback => showBlock2( indexBlock, callback ),
+        callback => showLetters2( indexBlock, callback ),
+        callback =>  delay2( 2000, callback ),
+        callback => {
+            hideLetters( indexBlock )
+            removeBlockRight( indexBlock, callback )
+        },
+        callback => {
+            if ( indexBlock < newsBlocks.length - 1 ) {
+                 arrActions = createArrActionsThird( indexBlock + 1 )
+                 doNextAction()
+            } else {
+                callback()
+            }
+        },
+        callback => moveBlocksLeft( callback ),
+        () => { 
+            arrActions = createArrActionsThird( 0 )
+            doNextAction()
+        }
+    ]
+ }
+
+/*
 
 const startAnimateThird = indexBlock => {
     currentPromise = showBlock(indexBlock)
@@ -446,57 +419,35 @@ const startAnimateThird = indexBlock => {
         })
 }
 
-
-const removeBlockRight = function(indexBlock) {
-    return new Promise((resolve, reject) => {
-        isRender = true
-        transform(
-            newsBlocks[indexBlock].obj3D, 
-            {x: 2000, y: 0, z: (newsBlocks.length * -100) + (indexBlock * 100)}, 
-            {x: 0, y: 0, z: 0}, 
-            1000,
-            () => { 
-                newsBlocks[indexBlock].mainBlock.classList.remove('light-border')  
-                isRender = false
-                resolve()
-            }
-        )
-
-    })
-}
+*/
 
 
-const moveBlocksLeftLeft = function() {
-    return new Promise((resolve, reject) => {
-        isRender = true
-        for (let i = 0; i < newsBlocks.length; i ++ ) {
-           transform(
-                newsBlocks[i].obj3D, 
-                {x: -5000, y: startPos03.pos.y, z: startPos03.pos.z + i * -100}, 
-                startPos03.rot,  
-                1500,
-                () => {
-                    isRender = false
-                    resolve()
-                }
-            )
+const removeBlockRight = function( indexBlock, callback ) {
+    isRender = true
+    transform(
+        newsBlocks[indexBlock].obj3D, 
+        {x: 2000, y: 0, z: (newsBlocks.length * -100) + (indexBlock * 100)}, 
+        {x: 0, y: 0, z: 0}, 
+        1000,
+        () => { 
+            newsBlocks[indexBlock].mainBlock.classList.remove('light-border')  
+            isRender = false
+            callback()
         }
-    })
+    )
 }
 
 
 
-const moveBlocksLeft = function() {
-    return new Promise((resolve, reject) => {
+const moveBlocksLeft = function(callback) {
         isRender = true
         for (let i = 0; i < newsBlocks.length; i ++ ) {
            transform(newsBlocks[i].obj3D, {x: startPos03.pos.x, y: startPos03.pos.y, z: startPos03.pos.z + i * -100}, startPos03.rot,  1500)
         }
         setTimeout(()=> {
            isRender = false
-           resolve()
-        }, 1500) 
-    })
+           callback()
+        }, 1800) 
 }
 
 
@@ -504,11 +455,47 @@ const moveBlocksLeft = function() {
 ////////////////////////////////////////////////////////////////
 
 
-const reset = () => {
-    TWEEN.removeAll()
-    for (let i = 0; i < newsBlocks.length; i ++ ) {
-       hideLetters(i)
-    } 
+const resetAndStart = val => {
+    isResetAnimate = true 
+
+    if (val === "bottom") {
+        arrActions.splice(1, 1, function(){
+            isResetAnimate = false
+            TWEEN.removeAll()
+            for (let i = 0; i < newsBlocks.length; i ++ ) {
+               hideLetters(i)
+            }
+            setBlocksInFirstPosition()
+            arrActions = createArrActionsFirst(0)
+            doNextAction()
+        })
+    }
+    if (val === 'top') {
+        arrActions.splice(1, 1, function(){
+            isResetAnimate = false
+
+            TWEEN.removeAll()
+            for (let i = 0; i < newsBlocks.length; i ++ ) {
+                hideLetters(i)
+            }
+            setBlocksInSecondPosition()
+            arrActions = createArrActionsSecond(0)
+            doNextAction()
+        })
+    }
+    if (val === 'left') {
+        arrActions.splice(1, 1, function(){
+            isResetAnimate = false
+            
+            TWEEN.removeAll()
+            for (let i = 0; i < newsBlocks.length; i ++ ) {
+                hideLetters(i)
+            }
+            setBlocksInThirdPosition()
+            arrActions = createArrActionsThird(0)
+            doNextAction()
+        })
+    }
 }
 
 
@@ -520,23 +507,26 @@ const reset = () => {
 
 ////////////////////////////////////////////////////////////////
 
+let isResetAnimate = false
 
-const showLetters = index => {
-    return new Promise((resolve, reject) => {
-        const { letters } = newsBlocks[index]
+const showLetters2 = (index, callback) => {
+    const { letters } = newsBlocks[index]
 
-       const showLetter = ind => {
-            setTimeout(() => {
-                letters[ind].className = 'show-letter'
-                if (ind < letters.length - 1) {
-                    showLetter(ind + 1)        
-                } else {
-                    resolve() 
+    const showLetter = ind => {
+        setTimeout(() => {
+            letters[ind].className = 'show-letter'
+            if (ind < letters.length - 1) {
+                if (isResetAnimate) {
+                    return callback()
                 }
-            }, 0)
-        }
-        showLetter(0)
-    })
+                showLetter(ind + 1)        
+            } else {
+                callback()
+            }
+        }, 0)
+    }
+
+    showLetter(0)
 }
 
 
@@ -568,38 +558,26 @@ const transform = (obj, pos, rot, duration, callback) => {
 
 
 
-
-
 /////////////////////////////////////////////////////////////////////
 
 createScene(document.querySelector('#canvas-wrapper2'))
 createNewsBlocks(DATA)
 render()
 animate()
-//setBlocksInFirstPosition()
-//startAnimateFirst(0)
-//setBlocksInSecondPosition() 
-//startAnimateSecond(0)
-//setBlocksInThirdPosition() 
-//startAnimateThird(0)
 
+
+setBlocksInFirstPosition()
+let arrActions = createArrActionsFirst(0)
+doNextAction()
 
 changerAnimations({
     'bottom': () => {
-        reset()
-        setBlocksInFirstPosition() 
-        startAnimateFirst(0)
+        resetAndStart("bottom")
     },
     'top': () => {
-        reset()
-        setBlocksInSecondPosition() 
-        startAnimateSecond(0)
+        resetAndStart("top")
     },
     'left': () => {
-        reset()
-        setBlocksInThirdPosition() 
-        startAnimateThird(0)
+        resetAndStart("left")
     },   
 })
-
-
