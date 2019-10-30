@@ -5,7 +5,7 @@
 ![Stability status](https://img.shields.io/badge/stability-notstable-yellow.svg) 
 ![License status](https://img.shields.io/badge/license-closed-red.svg) 
 
-![pic](https://github.com/fire888/garden/blob/master/src/assets/screenshot.png)
+![pic](https://github.com/fire888/carousel/blob/master/src/assets/screenshot.png)
 
 Play
 ------------ 
