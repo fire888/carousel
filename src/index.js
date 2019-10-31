@@ -6,15 +6,12 @@ import DATA from './data'
 import Background from './Backround/Background'
 import initUiChangerAnimations from './ui'
 
-Background(document.querySelector('#canvas-wrapper'))
-
-
-
-
 
 // INIT SCENE //////////////////////////////////////////
 
+
 let camera, cameraGroup, scene, renderer, canvasWrapper
+
 
 const createScene = wrapper => {
     canvasWrapper = wrapper
@@ -59,13 +56,11 @@ const animate = () => {
 }
 
 
-
-
-
-
 // INIT BLOCKS //////////////////////////////////////////////////////
 
+
 const newsBlocks = []
+
 
 const createNewsBlocks = DATA => {
     const arrNews = DATA.response.items
@@ -149,9 +144,8 @@ const getPictDromData = data => {
 }
 
 
-
-
 // ACTIONS //////////////////////////////////////////////////////////
+
 
 const startPos01 = {
     pos: { x: 0, y: -400, z: -800 }, 
@@ -360,45 +354,6 @@ const delay = ( time, it ) => {
 // SCENARIOUSES ///////////////////////////////////////////////////////////////
 
 
-const resetAndStartScenario = val => {
-    TWEEN.removeAll()
-    for ( let i = 0; i < newsBlocks.length; i ++ ) {
-        hideLetters( i )
-    }
-
-    if (val === "One") {
-        stopCurrentScenario()
-        setAllBlocksBottomBack()
-        startScenario( scenarioOne, 0 )
-    }
-    if (val === 'Two') {
-        stopCurrentScenario()
-        setAllBlocksTop()
-        startScenario( scenarioTwo, 0 )
-    }
-    if (val === 'Three') {
-        stopCurrentScenario()
-        setAllBlocksLeft()
-        startScenario( scenarioThree, 0 )
-    }
-}
-
-
-let it 
-
-
-const startScenario = ( scenario, indexBlock ) => {
-    it = scenario( indexBlock )
-    it.next()
-    it.next( it )
-}
-
-
-const stopCurrentScenario = () => {
-    if ( it ) it.return()
-}
-
-
 function *scenarioOne ( indexBlock ) {
     const it = yield
     moveBlockInCenter( indexBlock, it )
@@ -462,31 +417,69 @@ function *scenarioThree ( indexBlock ) {
 }
 
 
+const resetAndStartNewScenario = val => {
+    TWEEN.removeAll()
+    for ( let i = 0; i < newsBlocks.length; i ++ ) {
+        hideLetters( i )
+    }
+    stopCurrentScenario()
+    
+    if (val === "One") {
+        setAllBlocksBottomBack()
+        startScenario( scenarioOne, 0 )
+    }
+    if (val === 'Two') {
+        stopCurrentScenario()
+        setAllBlocksTop()
+        startScenario( scenarioTwo, 0 )
+    }
+    if (val === 'Three') {
+        stopCurrentScenario()
+        setAllBlocksLeft()
+        startScenario( scenarioThree, 0 )
+    }
+}
 
 
-////////////////////////////////////////////////////////////////
+let it 
+
+
+const startScenario = ( scenario, indexBlock ) => {
+    it = scenario( indexBlock )
+    it.next()
+    it.next( it )
+}
+
+
+const stopCurrentScenario = () => {
+    if ( it ) it.return()
+}
+
+
+// UI ///////////////////////////////////////////////////////////////
 
 
 initUiChangerAnimations({
     'One': () => {
-        resetAndStartScenario("One")
+        resetAndStartNewScenario("One")
     },
     'Two': () => {
-        resetAndStartScenario("Two")
+        resetAndStartNewScenario("Two")
     },
     'Three': () => {
-        resetAndStartScenario("Three")
+        resetAndStartNewScenario("Three")
     },   
 })
 
 
+// APP START ////////////////////////////////////////////////////////
 
 
-/////////////////////////////////////////////////////////////////////
+Background(document.querySelector('#canvas-wrapper'))
 
 createScene(document.querySelector('#canvas-wrapper2'))
 createNewsBlocks(DATA)
 animate()
-resetAndStartScenario('One')
+resetAndStartNewScenario('One')
 
 
