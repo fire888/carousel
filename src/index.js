@@ -301,11 +301,14 @@ const moveAllBlocksLeft = function( it ) {
 }
 
 
+let letterTimeout
+
+
 const showLetters = (index, it) => {
     const { letters } = newsBlocks[index]
 
     const showLetter = ind => {
-        setTimeout(() => {
+        letterTimeout = setTimeout(() => {
             letters[ind].className = 'show-letter'
             if (ind < letters.length - 1) {
                 showLetter(ind + 1)        
@@ -418,6 +421,7 @@ function *scenarioThree ( indexBlock ) {
 
 
 const resetAndStartNewScenario = val => {
+    if (letterTimeout) clearTimeout(letterTimeout)
     TWEEN.removeAll()
     for ( let i = 0; i < newsBlocks.length; i ++ ) {
         hideLetters( i )
