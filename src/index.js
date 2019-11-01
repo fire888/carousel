@@ -19,6 +19,6 @@ initUiChangerAnimations({
 })  
 
 newsWiget.playScenario( 'One' )
-setTimeout( () => newsWiget.stop(), 2000 ) 
-setTimeout( () => newsWiget.delete(), 4000 ) 
+//setTimeout( () => newsWiget.stop(), 2000 ) 
+//setTimeout( () => newsWiget.delete(), 4000 ) 
 

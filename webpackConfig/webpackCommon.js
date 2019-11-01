@@ -7,6 +7,10 @@ module.exports = {
 	entry: './src/index.js',
 	module: {
 		rules: [
+      {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
+      },
 			{ test: /\.txt$/, use: 'raw-loader' },
 			{
         test: /\.(png|svg|jpg|gif)$/,

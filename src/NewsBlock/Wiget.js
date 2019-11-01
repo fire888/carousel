@@ -50,7 +50,7 @@ export default class Wiget {
     resize () {
         this.camera.aspect = this.canvasWrapper.offsetWidth / this.canvasWrapper.offsetHeight
         this.camera.updateProjectionMatrix()
-        this.renderer.setSize( this.canvasWrapper.offsetWidth, this.canvasWrapper.offsetHeight )
+        this.renderer.setSize( this.canvasWrapper.offsetWidth - 14, this.canvasWrapper.offsetHeight - 14 )
         this._resizeMainBlocks()
         this._render()
     }
@@ -111,6 +111,7 @@ export default class Wiget {
         this.scene.add(this.cameraGroup)
     
         this.renderer = new THREE.CSS3DRenderer()
+        this.renderer.domElement.className = 'news-container'
     }
 
     _animate() {
@@ -142,7 +143,7 @@ export default class Wiget {
 
 
     _setAllBlocksBottomBack () {
-        this.canvasWrapper.style.boxShadow = 'none'
+        this.renderer.domElement.style.boxShadow = 'none'
         this.newsBlocks.forEach( (item, i)  => {
             item.obj3D.position.set(startPos01.pos.x, startPos01.pos.y + (i * -20), startPos01.pos.z)
             item.obj3D.rotation.set(startPos01.rot.x, startPos01.rot.y, startPos01.rot.z)
@@ -151,8 +152,9 @@ export default class Wiget {
     
     
     _setAllBlocksTop () {
-        this.canvasWrapper.style.boxShadow = `0 -15px 10px -10px rgba(0,255,255,0.85), 
-                                         0 15px 10px -10px rgba(0,255,255,0.85)`
+        this.renderer.domElement.style.boxShadow = 
+            `0 -15px 7px -7px rgba(0,255,255,0.85), 
+            0 15px 7px -7px rgba(0,255,255,0.85)`
         this.newsBlocks.forEach( ( item, i )  => {
             item.obj3D.position.set(startPos02.pos.x, startPos02.pos.y, startPos02.pos.z + (i * -100))
             item.obj3D.rotation.set(startPos02.rot.x, startPos02.rot.y, startPos02.rot.z)
@@ -161,8 +163,9 @@ export default class Wiget {
     
     
     _setAllBlocksLeft () {
-        this.canvasWrapper.style.boxShadow = `15px 0px 10px -10px rgba(0,255,255,0.85), 
-                                         -15px 0px 10px -10px rgba(0,255,255,0.85)`                                     
+        this.renderer.domElement.style.boxShadow = 
+            `15px 0px 7px -7px rgba(0,255,255,0.85), 
+            -15px 0px 7px -7px rgba(0,255,255,0.85)`                                     
         this.newsBlocks.forEach( ( item, i )  => {
             item.obj3D.position.set( startPos03.pos.x, startPos03.pos.y, startPos03.pos.z + (i * -100) )
             item.obj3D.rotation.set( startPos03.rot.x, startPos03.rot.y, startPos03.rot.z )

@@ -1,3 +1,6 @@
+
+import './style.css';
+
 export default class NewsItem {
 
     constructor( data ) {
