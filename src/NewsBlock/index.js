@@ -1,3 +1,18 @@
+/**
+ * IN MAIN FILE:
+ * 
+ * import NewsWiget from './NewsBlock'
+ *
+ * const newsWiget = new NewsWiget()
+ * newsWiget.appendTo( DomElement )
+ * newsWiget.createNewsBlocks( DATA )
+ * newsWiget.playScenario( 'One' )
+ * newsWiget.resize()
+ * newsWiget.stop() 
+ * newsWiget.delete() 
+ */
+
+
 import * as THREE from 'three'
 import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js'
 import 'three/examples/js/renderers/CSS3DRenderer';

@@ -3,7 +3,7 @@
 import DATA from './data'
 import Background from './Backround/Background'
 import initUiChangerAnimations from './ui'
-import NewsWiget from './NewsBlock/Wiget'
+import NewsWiget from './NewsBlock'
 
 Background( document.querySelector('#canvas-wrapper') )
 
