@@ -37,7 +37,9 @@ export default class Wiget {
         this._animate()
     }
 
+
     // PUBLIC ///////////////////////////////////////////////////////
+
 
     appendTo ( wrapper ) {
         this.canvasWrapper = wrapper
@@ -96,8 +98,8 @@ export default class Wiget {
     }
 
 
-
     // PRIVATE //////////////////////////////////////////////////////
+
 
     _createScene () {
         this.scene = new THREE.Scene()
@@ -253,7 +255,7 @@ export default class Wiget {
         for (let i = 0; i < this.newsBlocks.length; i ++ ) {
             this._transform(               
                 this.newsBlocks[i].obj3D, 
-                {x: startPos02.pos.x, y: startPos02.pos.y, z: startPos02.pos.z + i * -100}, 
+                { x: startPos02.pos.x, y: startPos02.pos.y, z: startPos02.pos.z + i * -100 }, 
                 startPos02.rot,  
                 1500,       
             )
@@ -275,10 +277,10 @@ export default class Wiget {
                 1500
             )
         }
-        setTimeout(()=> {
+        setTimeout( ()=> {
             this.isRender = false
             if ( it ) it.next()
-        }, 1800) 
+        }, 1800 ) 
     }
 
 
@@ -294,27 +296,27 @@ export default class Wiget {
     }
 
 
-    _transform (obj, pos, rot, duration, callback) {
-        new TWEEN.Tween(obj.position)
-            .to({ x: pos.x, y: pos.y, z: pos.z }, duration)
+    _transform ( obj, pos, rot, duration, callback ) {
+        new TWEEN.Tween( obj.position )
+            .to({ x: pos.x, y: pos.y, z: pos.z }, duration )
             .easing( TWEEN.Easing.Exponential.InOut )
-            .onComplete(function(){
-                if (callback) {
-                   callback();
+            .onComplete( function () {
+                if ( callback ) {
+                   callback()
                 }
-            })
+            } )
             .start()
-        new TWEEN.Tween(obj.rotation)
-            .to({ x: rot.x, y: rot.y, z: rot.z }, duration)
-            .easing(TWEEN.Easing.Exponential.InOut)
+        new TWEEN.Tween( obj.rotation )
+            .to( { x: rot.x, y: rot.y, z: rot.z }, duration )
+            .easing( TWEEN.Easing.Exponential.InOut )
             .start()
     }
 
 
-    _delay( time, it ) {
-        setTimeout(() => {
-            if (it) it.next()
-        }, time)
+    _delay ( time, it ) {
+        setTimeout( () => {
+            if ( it ) it.next()
+        }, time )
     }
 
 
@@ -331,7 +333,7 @@ export default class Wiget {
     _stopCurrentScenario ( isHideLetters = false ) {
         TWEEN.removeAll()
         if ( this.it ) this.it.return()
-        if (!isHideLetters) {
+        if ( !isHideLetters ) {
             return
         }
         for ( let i = 0; i < this.newsBlocks.length; i ++ ) {
@@ -339,7 +341,9 @@ export default class Wiget {
         }
     }
 
+
     /////////////////////////////////////////////////////////////////////////
+
 
     *_scenarioOne ( indexBlock ) {
         const it = yield
@@ -361,6 +365,7 @@ export default class Wiget {
         }
     }
 
+
     *_scenarioTwo ( indexBlock ) {
         const it = yield
         this._moveBlockInCenter( indexBlock, it )
@@ -380,6 +385,7 @@ export default class Wiget {
             this._startScenario( this._scenarioTwo.bind( this ), 0 )
         }  
     }
+
 
     *_scenarioThree ( indexBlock ) {
         const it = yield
@@ -401,4 +407,5 @@ export default class Wiget {
         }
     }
 }
+
 
