@@ -20,7 +20,6 @@ const startPos03 = {
 }
 
 
-
 export default class Wiget {
 
     constructor () {
@@ -29,7 +28,7 @@ export default class Wiget {
         this.scene 
         this.renderer 
         this.canvasWrapper
-        this.isRender = true
+        this.isRender = false
 
         this.newsBlocks = []
         this.it
@@ -93,6 +92,7 @@ export default class Wiget {
 
     delete() {
         console.log('delete')
+        // TODO: ADD DELETE WIGET
     }
 
 
@@ -401,10 +401,4 @@ export default class Wiget {
         }
     }
 }
-
-
-
-
-
-
 
