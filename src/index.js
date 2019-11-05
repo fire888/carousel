@@ -5,7 +5,25 @@ import Background from './Backround/Background'
 import initUiChangerAnimations from './ui'
 import NewsWiget from './NewsBlock'
 
-Background( document.querySelector('#canvas-wrapper') )
+
+
+
+///////////////////////////
+
+let back = new Background( document.querySelector('#canvas-wrapper') )
+//back.startAnimate()
+
+//setTimeout( () => { 
+//    back.stop()
+//}, 3000 )
+
+//setTimeout( () => { 
+//    back.play()
+//}, 5000 )
+
+
+///////////////////////////
+
 
 const newsWiget = new NewsWiget()
 newsWiget.appendTo( document.querySelector('#canvas-wrapper2') )
@@ -21,4 +39,52 @@ initUiChangerAnimations({
 newsWiget.playScenario( 'One' )
 //setTimeout( () => newsWiget.stop(), 2000 ) 
 //setTimeout( () => newsWiget.delete(), 4000 ) 
+
+/////////////////////////////////////////////////////////////////////
+
+
+let animator = Animator()
+animator.startAnimate()
+
+
+// ANIMATOR //////////////////////////////////////////////////////////
+
+
+function Animator() {
+    let delta, time, oldTime, count = 0
+    let func
+    let step
+
+    const animate = () => {
+        step = requestAnimationFrame(animate)
+     
+        time = Date.now()
+        delta = time - oldTime
+        if ( isNaN( delta ) || delta > 1000 || delta == 0 ) {
+            delta = 1000/60
+        }
+        count += delta * 0.001
+
+        back.drawFrame( time, count )
+        newsWiget.draw()
+        //if ( func ) func(  time, count )
+    }
+
+
+    return {
+        startAnimate( f ) {
+            func = f
+            animate()
+        },
+        stop() {
+            window.cancelAnimationFrame( step )
+        },
+        play( f ) { 
+            if ( f ) {
+                func = f
+            }
+            animate() 
+        }
+    }
+}
 

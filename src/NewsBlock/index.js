@@ -49,7 +49,7 @@ export default class Wiget {
         this.it
 
         this._createScene()
-        this._animate()
+        //this._animate()
     }
 
 
@@ -131,6 +131,9 @@ export default class Wiget {
 
     _animate() {
         requestAnimationFrame( this._animate.bind(this) )
+    }
+
+    draw() {
         if ( this.isRender ) {
             TWEEN.update()
             this._render()
