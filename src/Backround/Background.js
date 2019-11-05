@@ -5,7 +5,7 @@ import CONFIG from './config'
 // RENDERER SCENE ///////////////////////////////////////////////////
 
 
-export default class Background {
+export class Background {
     constructor( wrapper ) {
         this.canvasWrapper = wrapper ? wrapper : null
 
@@ -37,8 +37,8 @@ export default class Background {
 
     _addWindowResizeListener() {
         window.addEventListener( 'resize', function() {
-            resizeToParentSize()
-        } )
+            this.resizeToParentSize()
+        }.bind( this ) )
     }
 
 

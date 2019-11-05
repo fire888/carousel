@@ -1,7 +1,7 @@
 
 
 import DATA from './data'
-import Background from './Backround/Background'
+import { Background } from './Backround/Background'
 import initUiChangerAnimations from './ui'
 import NewsWiget from './NewsBlock'
 
@@ -11,15 +11,15 @@ import NewsWiget from './NewsBlock'
 ///////////////////////////
 
 let back = new Background( document.querySelector('#canvas-wrapper') )
-//back.startAnimate()
+back.startAnimate()
 
-//setTimeout( () => { 
-//    back.stop()
-//}, 3000 )
+setTimeout( () => { 
+    back.stop()
+}, 3000 )
 
-//setTimeout( () => { 
-//    back.play()
-//}, 5000 )
+setTimeout( () => { 
+    back.play()
+}, 5000 )
 
 
 ///////////////////////////
@@ -65,7 +65,7 @@ function Animator() {
         }
         count += delta * 0.001
 
-        back.drawFrame( time, count )
+        //back.drawFrame( time, count )
         newsWiget.draw()
         //if ( func ) func(  time, count )
     }
@@ -73,7 +73,9 @@ function Animator() {
 
     return {
         startAnimate( f ) {
-            func = f
+            if ( f ) {
+                func = f
+            }
             animate()
         },
         stop() {
