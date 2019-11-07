@@ -3,7 +3,7 @@
 import DATA from './data'
 import { Background } from './Backround/Background'
 import initUiChangerAnimations from './ui'
-import NewsWiget from './NewsBlock'
+import NewsWiget from './NewsWiget/NewsWiget'
 
 
 
@@ -26,10 +26,10 @@ setTimeout( () => {
 
 
 const newsWiget = new NewsWiget()
-newsWiget.appendTo( document.querySelector('#canvas-wrapper2') )
+newsWiget.appendToDOMElement( document.querySelector('#canvas-wrapper2') )
 newsWiget.createNewsBlocks( DATA )
 
-window.addEventListener( 'resize', () => newsWiget.resize(), false )
+window.addEventListener( 'resize', () => newsWiget.resizeByParentSizes(), false )
 initUiChangerAnimations({
     'One': () => newsWiget.playScenario( 'One' ),
     'Two': () => newsWiget.playScenario( 'Two' ),
@@ -66,7 +66,7 @@ function Animator() {
         count += delta * 0.001
 
         //back.drawFrame( time, count )
-        newsWiget.draw()
+        //newsWiget.draw()
         //if ( func ) func(  time, count )
     }
 

@@ -1,0 +1,276 @@
+<html>
+<head>
+<style>
+.card {
+	display: flex;
+	flex-direction: column;
+	background-color: #aabbcc;
+	max-width: 200px;
+	height: 250px;
+	padding: 3px
+}
+.img {
+	background-color: #ddeeff;
+	min-height: 140px;
+}
+.date {
+	background-color: #bbccdd;
+}
+.wrapper-text {
+	padding 0;
+	background-color: red;
+	flex: 1 0 auto;
+}
+.hidden-letter {
+	opacity: 0.1;
+}
+</style>
+</head>
+<body>
+<div class='card'>
+	<div class='img'></div>
+	<div class='date'>12324</div>	
+	<div class='wrapper-text'>
+		<div class='text'>
+	</div>
+</div>
+<script>
+ 
+const fullMessage = 'Solution using Promises Блин, опять весь ролик про зарплаты одна вода! ' +  
+'Лайк однозначно! Смотрим ролики Сергея всей семьёй, бабушка стала лучше видеть, у деда ' + 
+'нормализовался аппетит, кошка Мурка снова ласковая, родители довольны, советуем всем своим знакомым. ' + 
+'Solution using Promises Блин, опять весь ролик про зарплаты одна вода! ' +  
+'Лайк однозначно! Смотрим ролики Сергея всей семьёй, бабушка стала лучше видеть, у деда ' + 
+'нормализовался аппетит, кошка Мурка снова ласковая, родители довольны, советуем всем своим знакомым. ' +
+'Solution using Promises Блин, опять весь ролик про зарплаты одна вода! ' +  
+'Лайк однозначно! Смотрим ролики Сергея всей семьёй, бабушка стала лучше видеть, у деда ' + 
+'нормализовался аппетит, кошка Мурка снова ласковая, родители довольны, советуем всем своим знакомым. ';
+
+////////////////////////////////////////////////////////////////////////
+
+
+
+const mainWrapper = document.querySelector('.wrapper-text') 
+const textContainer = document.querySelector('.text') 
+let textParts = [] 
+
+
+
+
+const init = () => {
+   return new Promise( resolve => {
+
+		let text = [...fullMessage].map( item => item.replace(/./g, '<span class="hidden-letter">$&</span>') )
+		
+		
+		let indexPart = 0
+		textParts.push([])
+		
+		for (let i = 0; i < text.length; i++) {
+			
+			textContainer.innerHTML += text[ i ]
+			
+			if ( +textContainer.offsetHeight < mainWrapper.offsetHeight - 20 ) {
+				textParts[ indexPart ] += text[ i ]
+			} else {
+				if ( text[i] !== '<span class="hidden-letter"> </span>' ) {
+                    textParts[ indexPart ] += text[ i ]
+				} else {
+					textParts[ indexPart ] += '<span class="hidden-letter"> -></span>'
+					
+					textContainer.innerHTML = text[ i ]
+					textParts.push([])
+					indexPart ++
+					textParts[ indexPart ] += text[ i ]				
+				}
+			}		
+		}
+		textContainer.innerHTML = ''
+		resolve()
+	})
+}
+
+
+
+
+const showPart = indPart => {
+	
+	if ( !textParts[ indPart ] ) {
+		return
+	}
+	
+	textContainer.innerHTML = textParts[ indPart ]
+	let text = textContainer.querySelectorAll('.hidden-letter')
+	
+	const showLetter = indLetter => {
+	    if ( !text[ indLetter ] ) {
+			return setTimeout( () => {
+				showPart( indPart + 1 )
+			}, 1000 )
+		}
+		
+		text[ indLetter ].style.opacity = 1
+		
+		return setTimeout( () => {
+			showLetter( indLetter + 1 )
+		}, 0 )
+	}
+	
+	showLetter( 0 )
+}
+
+
+
+init()
+ .then( () => {
+ 	showPart(0)
+ })
+
+
+
+window.addEventListener('resize', () => { 
+  init().then( () => {
+ 	showPart(0)
+  })
+})
+
+
+
+/*
+
+const textContainer = document.querySelector('.text') 
+let textParts = [] 
+
+
+const init = () => {
+   return new Promise( resolve => {
+
+		let text = [...fullMessage].map( item => item.replace(/./g, '<span class="hidden-letter">$&</span>') )
+		
+		
+		let indexPart = 0
+		textParts.push([])
+		
+		for (let i = 0; i < text.length; i++) {
+		   
+			textContainer.innerHTML += text[ i ]
+			
+			if (+textContainer.offsetHeight < 105) {
+				textParts[ indexPart ].push( text[ i ] )
+			} else {
+				textContainer.innerHTML = text[ i ]
+				textParts.push([])
+				indexPart ++
+				textParts[ indexPart ].push( text[ i ] )
+			}		
+		}
+		textContainer.innerHTML = ''
+		resolve()
+	})
+}
+
+
+let indexLetter = 0, indexPart = 0
+const showLetter = () => {
+	if (!textParts[indexPart]) {
+		return
+	}
+	
+	if (textParts[indexPart][indexLetter]) {
+		textContainer.innerHTML += textParts[indexPart][indexLetter]
+		indexLetter ++
+		setTimeout(showLetter, 0)
+	} else {
+		indexPart ++
+		indexLetter = 0
+		
+		setTimeout( () => { 
+			textContainer.innerHTML = ''
+			showLetter()
+		}, 1000)
+	}	
+}
+
+init()
+ .then(showLetter)
+
+*/
+
+/*
+const nextStep = () => {
+	setTimeout( () => {
+		if ( i < fullMessage.length) {
+			const elemTest = document.querySelector('.test2')
+			elemTest.innerHTML += fullMessage[ i ] ;
+			if ( elemTest.offsetHeight > 100 ) {
+				document.querySelector('.test1').innerHTML = fullMessage[ i ];
+				elemTest.innerHTML = fullMessage[ i ] ;
+			} else {
+				document.querySelector('.test1').innerHTML += fullMessage[ i ];
+			}
+			i ++;
+			nextStep()
+		}
+	}, 50 )
+}
+
+i = 0;
+nextStep()
+
+
+
+for (let i = 0; i < fullMessage.length; i ++) {
+	//console.log(fullMessage[ i ])
+	
+}
+/*
+const typingPromises = (message, timeout) =>
+   {
+   const m = message
+  return [...message].map(
+    (ch, i) =>
+      new Promise(resolve => {
+        setTimeout(() => {
+          resolve(m.substring(0, i + 1));
+        }, timeout * i);
+      })
+  );
+}
+ 
+
+typingPromises(fullMessage, 5).forEach(promise => {
+  promise.then(portion => {
+    const elem = document.querySelector('.test2');
+	console.log(elem.offsetHeight)
+	//if ( elem.offsetHeight > 300 ) {
+	//	document.querySelector('.test1').innerHTML = '';
+	//	elem.innerHTML = ''
+	//}
+	elem.innerHTML = portion;
+    document.querySelector('.test1').innerHTML = portion;
+  });
+});
+*/
+
+
+/*
+var text = "Whatever you want your text to be here",
+    soFar = "";
+
+var visible = document.querySelector(".visible"),
+    invisible = document.querySelector(".invisible");
+
+invisible.innerHTML = text;
+var t = setInterval(function(){
+  soFar += text.substr(0, 1),
+  text = text.substr(1);
+
+  visible.innerHTML = soFar;
+  invisible.innerHTML = text;
+
+  if (text.length === 0) clearInterval(t);
+}, 100)
+*/
+
+</script>
+</body></html>

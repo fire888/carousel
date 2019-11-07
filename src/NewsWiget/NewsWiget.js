@@ -7,7 +7,7 @@
  * newsWiget.appendTo( DomElement )
  * newsWiget.createNewsBlocks( DATA )
  * newsWiget.playScenario( 'One' )
- * newsWiget.resize()
+ * newsWiget.resizeByParentSizes()
  * newsWiget.stop() 
  * newsWiget.delete() 
  */
@@ -38,36 +38,29 @@ const startPos03 = {
 export default class Wiget {
 
     constructor () {
-        this.camera 
-        this.cameraGroup 
-        this.scene 
-        this.renderer 
-        this.canvasWrapper
-        this.isRender = false
+        this.wrapper
+        this.container = document.createElement('div')
+        this.container.className = 'block-container'
 
         this.newsBlocks = []
         this.it
-
-        this._createScene()
-        //this._animate()
     }
 
 
     // PUBLIC ///////////////////////////////////////////////////////
 
 
-    appendTo ( wrapper ) {
-        this.canvasWrapper = wrapper
-        this.canvasWrapper.appendChild( this.renderer.domElement )
+    appendToDOMElement ( wrapper ) {
+        this.wrapper = wrapper
+        this.wrapper.appendChild( this.container )
+        this.resizeByParentSizes()
     }
 
 
-    resize () {
-        this.camera.aspect = this.canvasWrapper.offsetWidth / this.canvasWrapper.offsetHeight
-        this.camera.updateProjectionMatrix()
-        this.renderer.setSize( this.canvasWrapper.offsetWidth - 14, this.canvasWrapper.offsetHeight - 14 )
-        this._resizeMainBlocks()
-        this._render()
+    resizeByParentSizes () {
+        this.container.style.width = this.wrapper.offsetWidth
+        this.container.style.height = this.wrapper.offsetHeight
+        //this._resizeMainBlocks()
     }
 
 
@@ -76,11 +69,10 @@ export default class Wiget {
     
         for ( let i = 0; i < arrNews.length; i++ ) {
             const newsItem = new NewsItem( arrNews[ i ] )
-            this.scene.add( newsItem.obj3D )    
+            this.container.appendChild(newsItem.mainBlock)    
             this.newsBlocks.push( newsItem )
         }
-        this.resize()
-        this._render()
+        this.resizeByParentSizes()
     }
 
 
@@ -115,79 +107,37 @@ export default class Wiget {
 
     // PRIVATE //////////////////////////////////////////////////////
 
-
-    _createScene () {
-        this.scene = new THREE.Scene()
-
-        this.camera = new THREE.PerspectiveCamera( 40, 100/100, 1, 10000 )
-        this.camera.position.z = 3000
-        this.cameraGroup = new THREE.Group()
-        this.cameraGroup.add(this.camera)
-        this.scene.add(this.cameraGroup)
-    
-        this.renderer = new THREE.CSS3DRenderer()
-        this.renderer.domElement.className = 'news-container'
-    }
-
-    _animate() {
-        requestAnimationFrame( this._animate.bind(this) )
-    }
-
-    draw() {
-        if ( this.isRender ) {
-            TWEEN.update()
-            this._render()
-        }
-    }
-
-    _render () { 
-        this.renderer.render( this.scene, this.camera )
-    }
-
-
-    _resizeMainBlocks () {
-        this.canvasWrapper.style.fontSize = 1000 / this.canvasWrapper.offsetHeight * 45 + 'px'
-        const factor = this.canvasWrapper.offsetWidth / this.canvasWrapper.offsetHeight
-        const width = factor * 1700 + 'px'
-        let direction
-        factor > 2.5 ? direction = 'row' : direction = 'column'
-        this.newsBlocks.forEach( item => { 
-            item.resize( width, direction )
-        } )
-    }
-
-
     /////////////////////////////////////////////////////
 
 
     _setAllBlocksBottomBack () {
-        this.renderer.domElement.style.boxShadow = 'none'
+        /*this.renderer.domElement.style.boxShadow = 'none'
         this.newsBlocks.forEach( (item, i)  => {
             item.obj3D.position.set(startPos01.pos.x, startPos01.pos.y + (i * -20), startPos01.pos.z)
             item.obj3D.rotation.set(startPos01.rot.x, startPos01.rot.y, startPos01.rot.z)
-        })
+        })*/
     }
     
     
     _setAllBlocksTop () {
-        this.renderer.domElement.style.boxShadow = 
+        /*this.renderer.domElement.style.boxShadow = 
             `0 -15px 7px -7px rgba(0,255,255,0.85), 
             0 15px 7px -7px rgba(0,255,255,0.85)`
         this.newsBlocks.forEach( ( item, i )  => {
             item.obj3D.position.set(startPos02.pos.x, startPos02.pos.y, startPos02.pos.z + (i * -100))
             item.obj3D.rotation.set(startPos02.rot.x, startPos02.rot.y, startPos02.rot.z)
-        })
+        })*/
     }
     
     
     _setAllBlocksLeft () {
-        this.renderer.domElement.style.boxShadow = 
+        /*this.renderer.domElement.style.boxShadow = 
             `15px 0px 7px -7px rgba(0,255,255,0.85), 
             -15px 0px 7px -7px rgba(0,255,255,0.85)`                                     
         this.newsBlocks.forEach( ( item, i )  => {
             item.obj3D.position.set( startPos03.pos.x, startPos03.pos.y, startPos03.pos.z + (i * -100) )
             item.obj3D.rotation.set( startPos03.rot.x, startPos03.rot.y, startPos03.rot.z )
-        })
+        })*/
     }
     
     
@@ -367,6 +317,7 @@ export default class Wiget {
 
 
     *_scenarioOne ( indexBlock ) {
+        /*
         const it = yield
         this._moveBlockInCenter( indexBlock, it )
         yield
@@ -384,10 +335,12 @@ export default class Wiget {
             yield
             this._startScenario( this._scenarioOne.bind( this ), 0 )
         }
+        */
     }
 
 
     *_scenarioTwo ( indexBlock ) {
+        /*
         const it = yield
         this._moveBlockInCenter( indexBlock, it )
         yield
@@ -404,11 +357,12 @@ export default class Wiget {
             this._moveAllBlocksTop( it )
             yield
             this._startScenario( this._scenarioTwo.bind( this ), 0 )
-        }  
+        } */ 
     }
 
 
     *_scenarioThree ( indexBlock ) {
+        /*
         const it = yield
         this._moveBlockInCenter( indexBlock, it )
         yield
@@ -426,6 +380,7 @@ export default class Wiget {
             yield
             this._startScenario( this._scenarioThree.bind( this ), 0 )
         }
+        */
     }
 }
 
