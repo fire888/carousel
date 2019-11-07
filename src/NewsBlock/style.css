@@ -35,6 +35,11 @@
     min-height: 105px;
   }
 
+  .text-block-container {
+    flex: 1 0 auto;
+    background-color: brown; 
+  }
+
   .news-item-text {
     position: relative;
     font-size: 80%;
@@ -43,6 +48,7 @@
     padding: 60px 100px 100px 100px;
     color: rgba(255,255,255,0.75);
     text-shadow: 0 0 10px rgba(0,255,255,0.95);
+    background-color: aqua;
   }
 
   .hidden-letter { 

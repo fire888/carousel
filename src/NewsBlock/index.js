@@ -80,6 +80,9 @@ export default class Wiget {
             this.newsBlocks.push( newsItem )
         }
         this.resize()
+        this.newsBlocks.forEach( item => { 
+            item.calkText()
+        } )
         this._render()
     }
 
@@ -129,9 +132,9 @@ export default class Wiget {
         this.renderer.domElement.className = 'news-container'
     }
 
-    _animate() {
-        requestAnimationFrame( this._animate.bind(this) )
-    }
+    //_animate() {
+    //    requestAnimationFrame( this._animate.bind(this) )
+    //}
 
     draw() {
         if ( this.isRender ) {

@@ -24,23 +24,29 @@ export default class NewsItem {
         dateBlock.classList.add('news-item-date')
         let dateData = new Date( data["date"] * 1000)
         dateData = `${dateData.getDay()}.${dateData.getMonth()-1}.${dateData.getFullYear()}`
-        dateData = dateData.replace(/./g, '<span class="hidden-letter">$&</span>')
+        dateData = dateData.replace(/./g, '<span>$&</span>')
         dateBlock.innerHTML = dateData
         headBlock.appendChild(dateBlock)
 
-        const textBlock = document.createElement('div')
-        textBlock.classList.add('news-item-text')
-        const textData = data["text"].replace(/./g, '<span class="hidden-letter">$&</span>')
-        textBlock.innerHTML = textData
-        mainBlock.appendChild(textBlock)
+        this.textBlockContainer = document.createElement('div')
+        this.textBlockContainer.className = 'text-block-container'
+        mainBlock.appendChild(this.textBlockContainer)
+        
+        this.textBlock = document.createElement('div')
+        this.textBlock.classList.add('news-item-text')
+        //this.textBlock.innerHTML = textData
+        this.textBlockContainer.appendChild(this.textBlock)
 
-        const letters = mainBlock.querySelectorAll('.hidden-letter')
+        this.textData = data["text"]
+
+        const letters = this.textBlock.querySelectorAll('.hidden-letter')
 
         this.letters = letters
         this.mainBlock = mainBlock
         this.obj3D = new THREE.CSS3DObject(mainBlock) 
         
         this.letterTimeout
+        this.textParts = []
     }
 
     getPictDromData( data ) {
@@ -70,8 +76,71 @@ export default class NewsItem {
         }
     }
 
+    ///////////////
+
+    calkText() {
+        let text = [this.textData].map( item => item.replace(/./g, '<span class="hidden-letter">$&</span>') )
+		
+		let indexPart = 0
+		this.textParts.push([])
+		
+		for (let i = 0; i < text.length; i++) {
+			
+			this.textBlock.innerHTML += text[ i ]
+			
+			if ( +this.textBlock.offsetHeight < this.textBlockContainer.offsetHeight - 20 ) {
+				this.textParts[ indexPart ] += text[ i ]
+			} else {
+				if ( text[i] !== '<span class="hidden-letter"> </span>' ) {
+                    this.textParts[ indexPart ] += text[ i ]
+				} else {
+					this.textParts[ indexPart ] += '<span class="hidden-letter"> -></span>'
+					
+					this.textBlock.innerHTML = text[ i ]
+					this.textParts.push([])
+					indexPart ++
+					this.textParts[ indexPart ] += text[ i ]				
+				}
+			}		
+		}
+		this.textBlock.innerHTML = ''
+        
+        console.log( this.textParts )
+        //console.log( 'func calc text', this.textBlock.offsetHeight )
+    }
+
+
     showLetters( callback ) {
-        const showLetter = ind => {
+       
+        const showPart = indPart => {
+	
+            if ( !this.textParts[ indPart ] ) {
+                return  callback()
+            }
+            
+            this.textBlock.innerHTML = this.textParts[ indPart ]
+            let text = this.textBlock.querySelectorAll('.hidden-letter')
+            
+            const showLetter = indLetter => {
+                if ( !text[ indLetter ] ) {
+                    return setTimeout( () => {
+                        showPart( indPart + 1 )
+                    }, 1000 )
+                }
+                
+                text[ indLetter ].style.opacity = 1
+                
+                return setTimeout( () => {
+                    showLetter( indLetter + 1 )
+                }, 0 )
+            }
+            
+            showLetter( 0 )
+        }
+
+        showPart( 0 )
+
+        /*const showLetter = ind => {
             this.letterTimeout = setTimeout(() => {
                 this.letters[ind].className = 'show-letter'
                 if (ind < this.letters.length - 1) {
@@ -81,7 +150,7 @@ export default class NewsItem {
                 }
             }, 0)
         }
-        showLetter(0)
+        showLetter(0)*/
     }
     
     
