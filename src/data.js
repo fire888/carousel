@@ -54,7 +54,7 @@ export default {
             "count": 32020
           }
         },
-        {
+        /* {
           "id": 1247831,
           "from_id": -20629724,
           "owner_id": -20629724,
@@ -102,7 +102,7 @@ export default {
           "views": {
             "count": 6168
           }
-        },
+        },*/
         /*{
           "id": 1247828,
           "from_id": -20629724,

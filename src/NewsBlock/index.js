@@ -59,6 +59,7 @@ export default class Wiget {
     appendTo ( wrapper ) {
         this.canvasWrapper = wrapper
         this.canvasWrapper.appendChild( this.renderer.domElement )
+        this.resize()
     }
 
 
@@ -66,6 +67,9 @@ export default class Wiget {
         this.camera.aspect = this.canvasWrapper.offsetWidth / this.canvasWrapper.offsetHeight
         this.camera.updateProjectionMatrix()
         this.renderer.setSize( this.canvasWrapper.offsetWidth - 14, this.canvasWrapper.offsetHeight - 14 )
+        if ( !this.newsBlocks.length ) {
+            return;
+        } 
         this._resizeMainBlocks()
         this._render()
     }
@@ -79,11 +83,8 @@ export default class Wiget {
             this.scene.add( newsItem.obj3D )    
             this.newsBlocks.push( newsItem )
         }
-        this.resize()
-        this.newsBlocks.forEach( item => { 
-            item.calkText()
-        } )
         this._render()
+        this.resize()
     }
 
 
@@ -156,6 +157,9 @@ export default class Wiget {
         factor > 2.5 ? direction = 'row' : direction = 'column'
         this.newsBlocks.forEach( item => { 
             item.resize( width, direction )
+        } )
+        this.newsBlocks.forEach( item => { 
+            item.calkText()
         } )
     }
 
