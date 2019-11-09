@@ -35,7 +35,7 @@ const startPos03 = {
 }
 
 
-export default class Wiget {
+export default class NewsWiget {
 
     constructor () {
         this.camera 
@@ -70,6 +70,7 @@ export default class Wiget {
         if ( !this.newsBlocks.length ) {
             return;
         } 
+        this._render()
         this._resizeMainBlocks()
         this._render()
     }
@@ -159,7 +160,7 @@ export default class Wiget {
             item.resize( width, direction )
         } )
         this.newsBlocks.forEach( item => { 
-            item.calkText()
+            item.calkText( )
         } )
     }
 
